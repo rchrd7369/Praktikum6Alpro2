@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mengambil Data dari URL</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            margin: 20px auto;
+            padding: 20px;
+            width: 30vw;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .container-table{
+            margin-top: 5vw;
+            width: 100vw;
+            overflow-x: scroll;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            text-align: center;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        table {
+            width: auto;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid #963939;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Mengambil Data dari URL</h1>
+        <input type="text" id="urlInput" placeholder="Masukkan URL">
+        <button id="fetchButton">Ambil Data</button>
+    </div>
+    <div id="resultTable" class="container-table">
+        <!-- Tabel hasil akan ditampilkan di sini -->
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const urlInput = document.getElementById("urlInput");
+            const fetchButton = document.getElementById("fetchButton");
+            const resultTable = document.getElementById("resultTable");
+
+            fetchButton.addEventListener("click", function () {
+                const url = urlInput.value;
+
+                if (url) {
+                    // Gunakan Axios untuk mengambil data dari URL
+                    axios.get(url)
+                        .then(function (response) {
+                            const data = response.data;
+
+                            // Buat tabel HTML dari data yang diterima
+                            const table = document.createElement("table");
+                            const headers = Object.keys(data[0]);
+
+                            // Tambahkan header tabel
+                            const headerRow = table.insertRow(0);
+                            headers.forEach(function (header) {
+                                const th = document.createElement("th");
+                                th.textContent = header;
+                                headerRow.appendChild(th);
+                            });
+
+                            // Tambahkan data ke tabel
+                            data.forEach(function (row) {
+                                const newRow = table.insertRow(-1);
+                                headers.forEach(function (header) {
+                                    const cell = newRow.insertCell(-1);
+                                    cell.textContent = row[header];
+                                });
+                            });
+
+                            // Tampilkan tabel di bawah button
+                            resultTable.innerHTML = "";
+                            resultTable.appendChild(table);
+                        })
+                        .catch(function (error) {
+                            console.error("Terjadi kesalahan:", error);
+                        });
+                } else {
+                    alert("Masukkan URL terlebih dahulu");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
